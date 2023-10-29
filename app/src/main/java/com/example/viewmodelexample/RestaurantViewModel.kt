@@ -29,4 +29,7 @@ class RestaurantViewModel : ViewModel(){
         restaurantList.value = newList
     }
 
+    fun setRestaurantList( newList : MutableList<RestaurantInfoDTO>){
+        restaurantList.value= newList
+    }
 }
