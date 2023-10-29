@@ -17,8 +17,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        Log.i("#OnResume MainActivity", "viewModel 서버 갱신 호출")
-        viewModel.getRestaurantListFromServer()
+        Log.i("#OnResume MainActivity", "resume is called")
+        // viewModel.getRestaurantListFromServer() ==> data가 변하면 UI도 update
+        // 만약 orientation change나 다른 activity에서 돌아올 때 유지가 안되는 UI가 있든지
+        // data를 서버에서 다시 불러 오고 싶으면
+        // or UI만 개선
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,15 +35,17 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[RestaurantViewModel::class.java]
 
         // viewModel observer 설정
-        viewModel.restaurantList.observe(this, Observer {
+        viewModel.getRestaurantList().observe(this, Observer {
             Log.i("#observer >> ", "restaurant list value changed")
 
             // 여기서 ui를 변화시킨다
-            bindMain.textView.text = viewModel.restaurantList.value.toString()
+            bindMain.textView.text = viewModel.getRestaurantList().value.toString()
 
         })
 
-
+        // global variable 사용
+        // 사용하려면 RestApplication 및 AndroidManifest.xml 변화 참고
+        (application as RestApplication).globalUsername = "홍길동"
 
         bindMain.buttonActivity.setOnClickListener{
             Intent(applicationContext, OtherActivity::class.java).also{ startActivity(it)}
